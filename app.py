@@ -1,9 +1,20 @@
-import api
-import redact
-import sys
+from flask import Flask, request
+app = Flask(__name__)
 
-if __name__ == "__main__":
-    print('arg:' , sys.argv[1])
-    result = api.processResponse(api.sendRequest(sys.argv[1]))
-    print('result: ', result)
-    print('redact:', redact.redact(sys.argv[1], result))
+import redact
+
+@app.route('/')
+def home():
+    return '''
+<form method="post" action="/redact">
+<textarea width="50%" name="text"></textarea>
+<input type="submit"/>
+</form>'''
+
+@app.route('/redact', methods=['POST'])
+def redact_view():
+    try:
+        text = request.form['text']
+        return redact.redact(text)
+    except KeyError:
+        return 'No text'

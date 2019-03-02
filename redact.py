@@ -1,12 +1,14 @@
 import itertools
 import re
 import datefinder
+import api
 
-_redact_patterns = map(re.compile, (
+_redact_patterns = (re.compile(pattern, re.I) for pattern in (
         r'\b\d{6}\d*\b', # long number
         r'\b([+]?\d{1,2})?(\d{3}?){2}\d{4}\b', # mobile number
         r'\b[A-Za-z]{5}\d{4}[A-Za-z]{1}\b', # pan
         r'\b\d{4}\s\d{4}\s\d{4}\b', # aadhar
+        r'\bmale|female\b', # gender
     ))
 
 _sensitive_entities = (
@@ -19,9 +21,11 @@ _sensitive_entities = (
         'Organization'
     )
 
-def redact(text, entities):
+def redact(text):
     placeholder = 'XXXX'
     redacted_text = text
+
+    entities = api.processResponse(api.sendRequest(text))
     
     for entity in entities:
         if entity['type'] in _sensitive_entities:
