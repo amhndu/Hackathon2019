@@ -11,6 +11,7 @@ def index():
 def redact_view():
     try:
         text = request.form['text']
-        return redact.redact(text)
+        redacted_text = redact.redact(text)
     except KeyError:
-        return 'No text'
+        redacted_text = 'No text'
+    return render_template("redact.html", text=redacted_text)
