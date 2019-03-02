@@ -1,4 +1,8 @@
 
 <div>
-	{{text}}
+    {% for blob in redacted_results %}
+        {% if blob.1 %} <span class="redact" onclick="toggle(this)">{{ blob.0 }}</span>
+        {% else %} {{ blob.0 }}
+        {% endif %}
+    {% endfor %}
 </div>

@@ -9,9 +9,12 @@ def index():
 
 @app.route('/redact', methods=['POST'])
 def redact_view():
+    error = ''
     try:
         text = request.form['text']
-        redacted_text = redact.redact(text)
+        redacted_results = redact.redact(text)
+        print('redacted:', redacted_results)
+        return render_template("redact.html", redacted_results=redacted_results)
     except KeyError:
-        redacted_text = 'No text'
-    return render_template("redact.html", text=redacted_text)
+        error = 'No text'
+        return render_template("redact.html", error=error)

@@ -2,6 +2,7 @@ import itertools
 import re
 import datefinder
 import api
+from operator import itemgetter
 
 _redact_patterns = (re.compile(pattern, re.I) for pattern in (
         r'\b\d{6}\d*\b', # long number
@@ -21,23 +22,49 @@ _sensitive_entities = (
         'Organization'
     )
 
-def redact(text):
-    placeholder = 'XXXX'
-    redacted_text = text
+def _find_all(a_str, sub):
+    start = 0
+    length = len(sub)
+    while True:
+        start = a_str.find(sub, start)
+        if start == -1: return
+        yield (start, start + length)
+        start += length
 
-    entities = api.processResponse(api.sendRequest(text))
+def redact(text):
+    masked = text
+
+    locations = []
     
+    entities = api.processResponse(api.sendRequest(text))
     for entity in entities:
         if entity['type'] in _sensitive_entities:
-            redacted_text = redacted_text.replace(entity['text'], placeholder)
+            key = entity['type']
+            locations.extend(_find_all(masked, key))
+            # mask off matched characters to remove them from further search
+            masked = masked.replace(key, '*' * len(key))
+            # doing twice the work here, fix this later
 
     for pattern in _redact_patterns:
-        redacted_text = re.sub(pattern, placeholder, redacted_text)
+        locations.extend((m.start(), m.end()) for m in re.finditer(pattern, masked))
+        # mask off matched characters to remove them from further search
+        masked = re.sub(pattern, lambda match: '*' * len(match.group(0)), masked)
 
-    for _, date_string in datefinder.find_dates(redacted_text, source=True):
-        print(date_string)
-        if date_string[:3] in ('on ', 'at '):
-            date_string = date_string[3:]
-        redacted_text = redacted_text.replace(date_string, placeholder)
-
-    return redacted_text
+    for _, date_str in datefinder.find_dates(masked, source=True):
+        print(date_str)
+        if date_str[:3] in ('on ', 'at '):
+            date_str = date_str[3:]
+        locations.extend(_find_all(masked, date_str))
+        masked = masked.replace(date_str, '*' * len(date_str))
+    
+    locations.sort(key=itemgetter(0))
+    
+    result = []
+    advanced = 0
+    for start, end in locations:
+        result.append((text[advanced:start], False))
+        result.append((text[start:end], True))
+        advanced=end
+    if text[advanced:]:
+        result.append((text[advanced:], False))
+    return result
