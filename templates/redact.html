@@ -3,23 +3,66 @@
 .redact{
     text-decoration:line-through;
 }
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -60px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
 </style>
 <script type="text/javascript">
-    function toggle(param) {
+    function toggle(param){
         param.classList.toggle("redact");
     };
-function extractText() {
-    var node = document.getElementById('redactedText');
-    text = 	node.innerHTML;
-    document.getElementById('finalText').innerHTML = text;
 
-}
+	function extractText() {
+		var node = document.getElementById('redactedText');
+		var text = 	node.innerHTML;
+	//	document.querySelector(".redact").innerHTML = "XXXX";
+	//	var ftext = document.getElementById('redactedText').innerHTML;
+	//	node = text;
+	//	hideme();
+		text = text.replace(/redact/g, "")
+					.replace(/toggle(this)/g, "");
+		document.getElementById('finalText').innerHTML = text;
+	}
 </script>
 </head>
 <body>
+<br /><br />
 <div id = "redactedText">
 {% for blob in redacted_results %}
-{% if blob.1 %} <span class="redact" onclick="toggle(this)">{{ blob.0 }}</span>
+{% if blob.1 %} <span class="tooltip redact" onclick="toggle(this)"><span class="tooltiptext">{{ blob.0 }}</span>{{ blob.0 }}</span>
 {% else %} {{ blob.0 }}
 {% endif %}
 {% endfor %}
