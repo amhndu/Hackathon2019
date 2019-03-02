@@ -1,4 +1,23 @@
 
 <div>
-	{{text}}
+	<style>
+	.redact{
+      text-decoration:line-through;
+	}
+	</style>
+	<script type="text/javascript">
+		function toggle(param) {
+			param.classList.toggle("redact");
+		};
+		function extractText() {
+			var node = document.getElementById('redactedText');
+			text = 	node.innerHTML;
+			document.getElementById('finalText').innerHTML = text;
+			
+		}
+	</script>
+	<div id = "redactedText">my name is <span class="redact" onclick="toggle(this)">shivam garg</span>. <span class="redact" onclick="toggle(this)">jalandhar</span> 
+	</div>
+	<button onclick="extractText()">Submit</button>
+	<div id="finalText"></div>
 </div>
