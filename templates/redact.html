@@ -9,10 +9,18 @@
         param.classList.toggle("redact");
     };
 function extractText() {
-    var node = document.getElementById('redactedText');
-    text = 	node.innerHTML;
+    const node = document.getElementById('redactedText');
+    text = "";
+    for (const child of node.childNodes) {
+        if (child.nodeType == Node.TEXT_NODE) {
+            text += child.textContent;
+        } else if (!child.classList.contains("redact")) {
+            text += child.innerText;
+        } else if (!child.classList.contains("tooltip")){
+            text += "XXXX";
+        }
+    }
     document.getElementById('finalText').innerHTML = text;
-
 }
 </script>
 </head>
