@@ -39,7 +39,7 @@ def redact(text):
     entities = api.processResponse(api.sendRequest(text))
     for entity in entities:
         if entity['type'] in _sensitive_entities:
-            key = entity['type']
+            key = entity['text']
             locations.extend(_find_all(masked, key))
             # mask off matched characters to remove them from further search
             masked = masked.replace(key, '*' * len(key))
@@ -51,7 +51,6 @@ def redact(text):
         masked = re.sub(pattern, lambda match: '*' * len(match.group(0)), masked)
 
     for _, date_str in datefinder.find_dates(masked, source=True):
-        print(date_str)
         if date_str[:3] in ('on ', 'at '):
             date_str = date_str[3:]
         locations.extend(_find_all(masked, date_str))
