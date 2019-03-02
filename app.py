@@ -1,15 +1,11 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 app = Flask(__name__)
 
 import redact
 
 @app.route('/')
-def home():
-    return '''
-<form method="post" action="/redact">
-<textarea width="50%" name="text"></textarea>
-<input type="submit"/>
-</form>'''
+def index():
+    return render_template("index.html")
 
 @app.route('/redact', methods=['POST'])
 def redact_view():
