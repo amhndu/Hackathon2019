@@ -4,7 +4,7 @@ import api
 from operator import itemgetter
 
 _redact_patterns = (re.compile(pattern, re.I) for pattern in (
-        r'\b\d{6}\d*\b', # long number
+        r'\d{6}\d*', # long number
         r'\b([+]?\d{1,2})?(\d{3}?){2}\d{4}\b', # mobile number
         r'\b[A-Za-z]{5}\d{4}[A-Za-z]{1}\b', # pan
         r'\b\d{4}\s\d{4}\s\d{4}\b', # aadhar
@@ -47,7 +47,9 @@ def redact(text):
             masked = masked.replace(key, '*' * len(key))
             # doing twice the work here, fix this later
 
+    print(_redact_patterns)
     for pattern in _redact_patterns:
+        print(pattern)
         locations.extend((m.start(), m.end()) for m in re.finditer(pattern, masked))
         # mask off matched characters to remove them from further search
         masked = re.sub(pattern, lambda match: '*' * len(match.group(0)), masked)
