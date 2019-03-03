@@ -13,7 +13,6 @@ def redact_view():
     try:
         text = request.form['text']
         redacted_results = redact.redact(text)
-        print('redacted:', redacted_results)
         return render_template("redact.html", redacted_results=redacted_results)
     except KeyError:
         error = 'No text'

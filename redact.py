@@ -1,6 +1,5 @@
 import itertools
 import re
-import datefinder
 import api
 from operator import itemgetter
 
@@ -10,6 +9,7 @@ _redact_patterns = (re.compile(pattern, re.I) for pattern in (
         r'\b[A-Za-z]{5}\d{4}[A-Za-z]{1}\b', # pan
         r'\b\d{4}\s\d{4}\s\d{4}\b', # aadhar
         r'\bmale|female\b', # gender
+        r'\b(\d{2}[\/ ](\d{2}|January|Jan|February|Feb|March|Mar|April|Apr|May|May|June|Jun|July|Jul|August|Aug|September|Sep|October|Oct|November|Nov|December|Dec)[\/ ]\d{2,4})\b' # date
     ))
 
 _sensitive_entities = (
@@ -37,25 +37,24 @@ def redact(text):
     locations = []
     
     entities = api.processResponse(api.sendRequest(text))
+    print('entities:', entities)
     for entity in entities:
         if entity['type'] in _sensitive_entities:
             key = entity['text']
+            print(key)
             locations.extend(_find_all(masked, key))
             # mask off matched characters to remove them from further search
             masked = masked.replace(key, '*' * len(key))
             # doing twice the work here, fix this later
+            print(masked)
 
     for pattern in _redact_patterns:
+        print(pattern)
         locations.extend((m.start(), m.end()) for m in re.finditer(pattern, masked))
         # mask off matched characters to remove them from further search
         masked = re.sub(pattern, lambda match: '*' * len(match.group(0)), masked)
+        print(masked)
 
-    for _, date_str in datefinder.find_dates(masked, source=True):
-        if date_str[:3] in ('on ', 'at '):
-            date_str = date_str[3:]
-        locations.extend(_find_all(masked, date_str))
-        masked = masked.replace(date_str, '*' * len(date_str))
-    
     locations.sort(key=itemgetter(0))
     
     result = []
