@@ -1,45 +1,57 @@
-<head>
-<style>
-.redact{
-    text-decoration:line-through;
-}
-.tooltip {
-  position: relative;
-  display: inline-block;
-  border-bottom: 1px dotted black;
-}
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: 120px;
-  background-color: #555;
-  color: #fff;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px 0;
-  position: absolute;
-  z-index: 1;
-  bottom: 125%;
-  left: 50%;
-  margin-left: -60px;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.tooltip .tooltiptext::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: #555 transparent transparent transparent;
-}
+<!DOCTYPE HTML>
+<!--
+  Story by HTML5 UP
+  html5up.net | @ajlkn
+  Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+  <head>
+    <title>Redaction</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="static/css/main.css" />
+    <noscript><link rel="stylesheet" href="static/css/noscript.css" /></noscript>
+    <style>
+      .redact{
+          text-decoration:line-through;
+      }
+      .tooltip {
+        position: relative;
+        display: inline-block;
+        border-bottom: 1px dotted black;
+      }
+      .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        background-color: #555;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -60px;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .tooltip .tooltiptext::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #555 transparent transparent transparent;
+      }
 
-.tooltip:hover .tooltiptext {
-  visibility: visible;
-  opacity: 1;
-}
-</style>
+      .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+      }
+    </style>
 <script type="text/javascript">
     function toggle(param){
         param.classList.toggle("redact");
@@ -61,15 +73,56 @@ function extractText() {
 }
 </script>
 </head>
-<body>
-<br /><br />
-<div id = "redactedText">
-{% for blob in redacted_results %}
-{% if blob.1 %} <span class="tooltip redact" onclick="toggle(this)"><span class="tooltiptext">{{ blob.0 }}</span>{{ blob.0 }}</span>
-{% else %} {{ blob.0 }}
-{% endif %}
-{% endfor %}
-</div>
-<button onclick="extractText()">Submit</button>
-<div id="finalText"></div>
-</body>
+
+<body class="is-preload">
+<!-- Wrapper -->
+      <div id="wrapper" class="divided">
+          <section class="wrapper style1 content-align-left orient-left">
+            <div class="inner">
+              <h2>DESC here</h2>
+              <p>DESC here additional elements you <em>might</em> find useful (and yup, they look fine with any <span class="demo-controls">appearance</span>).</p>
+            <div class="index align-left">
+              <section>
+                    <header>
+                      <h3>Select from original text:</h3>
+                    </header>
+                    <div class="content box">
+
+                      <p id="redactedText">{% for blob in redacted_results %}
+                        {% if blob.1 %} <span class="tooltip redact" onclick="toggle(this)"><span class="tooltiptext">{{ blob.0 }}</span>{{ blob.0 }}</span>
+                        {% else %} {{ blob.0 }}
+                        {% endif %}
+                        {% endfor %}</p>
+                    </div>
+                  </section>
+                </div>
+                <ul class="actions">
+                        <li><a href="#finalText" onclick="extractText()" class="button primary icon fa-arrow-down">Redact!</a></li>
+                      </ul>
+                <div class="index align-left">
+                  <section>
+                    <header>
+                      <h3>Redacted Text</h3>
+                    </header>
+                    <div class="content box">
+
+                      <p id='finalText'></p>
+
+                    </div>
+                  </section>
+            </div>
+            </div>
+          </section>
+
+      </div>
+<!-- Scripts -->
+      <script src="static/js/jquery.min.js"></script>
+      <script src="static/js/jquery.scrollex.min.js"></script>
+      <script src="static/js/jquery.scrolly.min.js"></script>
+      <script src="static/js/browser.min.js"></script>
+      <script src="static/js/breakpoints.min.js"></script>
+      <script src="static/js/util.js"></script>
+      <script src="static/js/main.js"></script>
+
+  </body>
+</html>
