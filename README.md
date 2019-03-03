@@ -22,6 +22,16 @@ A running instance has been deployed on AWS and is available at [Redactio.ml](ht
 - Flask
 - AWS and docker for deployment
 
+## Screenshots
+#### Homepage
+![Homepage](https://github.com/amhndu/Hackathon2019/blob/master/screenshots/homepage.png)
+#### A sample input
+![A sample input](https://github.com/amhndu/Hackathon2019/blob/master/screenshots/homepage_example.png)
+#### Personal info fields highlighted
+![Personal info fields highlighted](https://github.com/amhndu/Hackathon2019/blob/master/screenshots/review_example.png)
+#### Redacted text based on selection by user
+![Redacted text based on selection by user](https://github.com/amhndu/Hackathon2019/blob/master/screenshots/redacted_example.png)
+
 ## Running with docker
 - Clone the repo
 - Copy `secret.py.sample` to `secret.py` and substitute api keys/secrets there
