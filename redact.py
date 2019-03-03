@@ -3,14 +3,14 @@ import re
 import api
 from operator import itemgetter
 
-_redact_patterns = (re.compile(pattern, re.I) for pattern in (
-        r'\d{6}\d*', # long number
+_redact_patterns = [re.compile(pattern, re.I) for pattern in (
+        r'\b\d{6}\d*\b', # long number
         r'\b([+]?\d{1,2})?(\d{3}?){2}\d{4}\b', # mobile number
         r'\b[A-Za-z]{5}\d{4}[A-Za-z]{1}\b', # pan
         r'\b\d{4}\s\d{4}\s\d{4}\b', # aadhar
         r'\bmale|female\b', # gender
         r'\b(\d{2}[\/ ](\d{2}|January|Jan|February|Feb|March|Mar|April|Apr|May|May|June|Jun|July|Jul|August|Aug|September|Sep|October|Oct|November|Nov|December|Dec)[\/ ]\d{2,4})\b' # date
-    ))
+    )]
 
 _sensitive_entities = (
         'Name',
