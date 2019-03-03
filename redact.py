@@ -19,7 +19,8 @@ _sensitive_entities = (
         'Location',
         'EmailAddress',
         'Company',
-        'Organization'
+        'Organization',
+        'badwords'
     )
 
 def _find_all(a_str, sub):
@@ -41,19 +42,15 @@ def redact(text):
     for entity in entities:
         if entity['type'] in _sensitive_entities:
             key = entity['text']
-            print(key)
             locations.extend(_find_all(masked, key))
             # mask off matched characters to remove them from further search
             masked = masked.replace(key, '*' * len(key))
             # doing twice the work here, fix this later
-            print(masked)
 
     for pattern in _redact_patterns:
-        print(pattern)
         locations.extend((m.start(), m.end()) for m in re.finditer(pattern, masked))
         # mask off matched characters to remove them from further search
         masked = re.sub(pattern, lambda match: '*' * len(match.group(0)), masked)
-        print(masked)
 
     locations.sort(key=itemgetter(0))
     
